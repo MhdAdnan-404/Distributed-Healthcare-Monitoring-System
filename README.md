@@ -85,7 +85,7 @@
 ## The Architecture
 
 <p align="center">
-  <img src="https://github.com/404dn/Distributed-Healthcare-Monitoring-System/blob/main/Photos/Design.png" alt="DDD Design" width="600"/>
+  <img src="https://raw.githubusercontent.com/404dn/Distributed-Healthcare-Monitoring-System/main/Photos/Design.png" alt="DDD Design" width="600"/>
 </p>
 
 ---
