@@ -97,12 +97,12 @@
 
 - **Spring Boot** used to structure services around core healthcare domains.
 - **Bounded Contexts** modeled for:
-  - Patient Management
-  - Appointment Scheduling
-  - Prescription Issuance
-  - Vital Sign Monitoring
-  - Notification Service
+  - Account Management
+  - Appointment Management
   - Call Management
+  - Vital Sign Monitoring and alert
+  - Notification Service
+  - Pharmacy
   - Dynamic Timetable Management
 - **CQRS** separates read/write responsibilities for scalability.
 
