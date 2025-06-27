@@ -1,0 +1,49 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+
+      routes:
+        - id: vitalSignManagement-service
+          uri: lb://VITALSIGNMANAGEMENT-SERVICE
+          predicates:
+            - Path=/api/v1/VMS/**
+
+        - id: vitalSignConsumer-service
+          uri: lb://VITALSIGNCONSUMER-SERVICE
+          predicates:
+            - Path=/api/v1/VCS/**
+
+        - id: pharmacy-service
+          uri: lb://PHARMACY-SERVICE
+          predicates:
+            - Path=/api/v1/PS/**
+
+        - id: notification-service
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/v1/NS/**
+
+        - id: dataCollection-service
+          uri: lb://DATACOLLECTION-SERVICE
+          predicates:
+            - Path=/api/v1/DCS/**
+
+        - id: callManagement-service
+          uri: lb://CALLMANAGEMENT-SERVICE
+          predicates:
+            - Path=/api/v1/CMS/**
+
+        - id: appointmentManagement-service
+          uri: lb://APPOINTMENTMANAGEMENT-SERVICE
+          predicates:
+            - Path=/api/v1/APMS/**
+
+        - id: accountManagement-service
+          uri: lb://ACCOUNTMANAGEMENT-SERVICE
+          predicates:
+            - Path=/api/v1/ACMS/**
+server:
+  port: 8222

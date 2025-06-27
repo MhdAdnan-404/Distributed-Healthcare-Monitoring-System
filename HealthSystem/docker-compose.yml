@@ -1,0 +1,129 @@
+services:
+  postgres:
+    container_name: ms_pg_sql_HealthSystem
+    image: postgres
+    environment:
+      POSTGRES_USER: adnan
+      POSTGRES_PASSWORD: asd
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - microservies-net
+    restart: "no"
+
+  redis:
+    image: redis:8.0.1
+    ports:
+      - 6379:6379
+    networks:
+      - microservies-net
+    restart: "no"
+
+
+  pgadmin:
+    container_name: ms_pgadmin_HealthSystem
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - 5050:80
+    networks:
+      - microservies-net
+    restart: "no"
+
+  mongodb:
+    container_name: ms_mongo_db_HealthSystem
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: adnan
+      MONGO_INITDB_ROOT_PASSWORD: asd
+    networks:
+      - microservies-net
+    restart: "no"
+
+  mongo-express:
+    container_name: ms_mongo_express_HealthSystem
+    image: mongo-express
+    restart: "no"
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: adnan
+      ME_CONFIG_MONGODB_ADMINPASSWORD: asd
+      ME_CONFIG_MONGODB_SERVER: mongodb
+    networks:
+      - microservies-net
+
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper_HealthSystem
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+    networks:
+      - microservies-net
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: ms_kafka_HealthSystem
+    ports:
+      - 9092:9092
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper_HealthSystem:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+    networks:
+      - microservies-net
+
+
+  openvidu:
+    image: OpenVidu/openvidu-local-deployment:3.2.0
+    container_name: ms_openvidu_HealthSystem
+    ports:
+      - "4443:4443"
+    environment:
+      - OPENVIDU_SECRET=someLongSecurePasswordHere
+      - DOMAIN_OR_PUBLIC_IP=host.docker.internal
+      - CERTIFICATE_TYPE=selfsigned
+      - ENABLE_OPENVIDU_CALL=true
+    networks:
+      - microservies-net
+
+
+
+  mail-dev:
+    container_name: ms_mail_dev_HealthSystem
+    image: maildev/maildev
+    ports:
+      - 1080:1080
+      - 1025:1025
+    restart: "no"
+
+networks:
+  microservies-net:
+    driver: bridge
+
+volumes:
+  postgres:
+  pgadmin:
+  mongo:
