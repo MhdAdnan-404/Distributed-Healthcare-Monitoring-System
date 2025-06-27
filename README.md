@@ -208,6 +208,6 @@
 
 ## License
 
-Distributed under the MIT License. See `LICENSE.md` for more information.
+See `LICENSE.md` for more information.
 
 <p align="right">(<a href="#project">back to top</a>)</p>
