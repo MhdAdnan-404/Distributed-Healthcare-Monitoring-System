@@ -31,11 +31,6 @@ spring:
           predicates:
             - Path=/api/v1/DCS/**
 
-        - id: callManagement-service
-          uri: lb://CALLMANAGEMENT-SERVICE
-          predicates:
-            - Path=/api/v1/CMS/**
-
         - id: appointmentManagement-service
           uri: lb://APPOINTMENTMANAGEMENT-SERVICE
           predicates:

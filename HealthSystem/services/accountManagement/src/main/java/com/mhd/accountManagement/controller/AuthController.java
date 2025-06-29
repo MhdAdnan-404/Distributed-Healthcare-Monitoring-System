@@ -9,6 +9,7 @@ import com.mhd.accountManagement.model.Users;
 import com.mhd.accountManagement.repository.UserRepository;
 import com.mhd.accountManagement.services.authentication.AccountActivationService;
 import com.mhd.accountManagement.services.authentication.JwtUtil;
+import com.mhd.accountManagement.services.authentication.TokenGenerationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,49 +24,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    AuthenticationManager authenticationManager;
-
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    JwtUtil jwtUtil;
-
-    @Autowired
-    UserMapper mapper;
 
     @Autowired
     AccountActivationService activationService;
 
+    @Autowired
+    TokenGenerationService tokenGenerationService;
+
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
-        Users user = userRepository.findByUsername(loginRequest.username());
-
-        if (!Boolean.TRUE.equals(user.getIsActivated())) {
-            throw new UserHasNotBeenActivatedException("The user must activate the account before logging in.");
-        }
-        if(Boolean.TRUE.equals(user.getIsDeleted())){
-            throw new UserHasBeenDeletedException("The user was deleted");
-        }
-
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequest.username(),
-                            loginRequest.password()
-                    )
-            );
-
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String token = jwtUtil.generateToken(userDetails.getUsername());
-
-            return ResponseEntity.ok(mapper.toLoginResponse(user, token));
-
-        } catch (BadCredentialsException e) {
-            throw new InvalidPasswordException("The password is incorrect.");
-        }
+        LoginResponse response = tokenGenerationService.login(loginRequest);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/activate")
